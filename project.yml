@@ -1,0 +1,61 @@
+name: FloatPrompt
+options:
+  bundleIdPrefix: com.yaolijun
+  deploymentTarget:
+    iOS: '26.0'
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    TARGETED_DEVICE_FAMILY: '1'
+    DEVELOPMENT_TEAM: 53HX95C65Q
+    CODE_SIGN_STYLE: Automatic
+packages:
+  FaceBeauty:
+    path: Vendor/FaceBeauty
+  MetalPetal:
+    path: Vendor/MetalPetal
+targets:
+  FloatPrompt:
+    type: application
+    platform: iOS
+    sources: [Sources]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yaolijun.floatprompt
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_CFBundleDisplayName: 拾言
+        GENERATE_INFOPLIST_FILE: YES
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: 拾言
+        NSCameraUsageDescription: 在拾言内自拍录制口播视频。
+        NSPhotoLibraryAddUsageDescription: 将你拍摄的视频保存到相册。
+        NSMicrophoneUsageDescription: 识别你的口播进度，让提词跟随声音。
+        NSSpeechRecognitionUsageDescription: 将口播转换为文字，与已有稿件匹配。
+        UIBackgroundModes: [audio]
+        UIRequiresFullScreen: true
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+    dependencies:
+      - package: MetalPetal
+      - package: FaceBeauty
+  FloatPromptUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: FloatPrompt
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yaolijun.floatprompt.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: FloatPrompt
+schemes:
+  FloatPrompt:
+    build:
+      targets:
+        FloatPrompt: all
+        FloatPromptUITests: [test]
+    test:
+      targets: [FloatPromptUITests]

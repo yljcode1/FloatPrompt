@@ -1,0 +1,35 @@
+{
+  "aiAvailable" : false,
+  "aiStatus" : "此设备的 AI 不可用，使用文字跟随",
+  "current" : 0,
+  "engineRunning" : false,
+  "events" : [
+    "08:30:41 应用进入后台",
+    "08:30:39 悬浮已开启",
+    "08:30:38 正在准备悬浮文字…",
+    "08:30:38 应用进入前台"
+  ],
+  "pip" : {
+    "active" : true,
+    "alphaRequested" : true,
+    "captureProtected" : false,
+    "frameCornerAlpha" : 0,
+    "frames" : 137,
+    "height" : 320,
+    "offset" : 0,
+    "opaqueControl" : false,
+    "outputObscured" : false,
+    "possible" : true,
+    "readyForDisplay" : true,
+    "rendererError" : "",
+    "rendererStatus" : 1,
+    "requiresFlush" : false,
+    "supported" : true,
+    "visiblePixelCount" : 36659,
+    "width" : 720
+  },
+  "receivedBuffers" : 0,
+  "system" : "27.0",
+  "timestamp" : "2026-10-18T00:30:46Z",
+  "voice" : false
+}

@@ -1,0 +1,27 @@
+{
+  "engineRunning" : false,
+  "events" : [
+    "20:01:11 应用进入前台",
+    "20:01:11 音频中断结束，请手动重新开启语音跟随。",
+    "20:01:04 应用进入后台",
+    "20:01:03 麦克风被系统或其他 App 中断；语音跟随已停止。",
+    "20:01:01 悬浮已开启；可切换到原生相机。窗口拖动与缩放由系统控制。",
+    "20:01:00 正在准备悬浮窗口…",
+    "20:01:00 使用设备端中文识别。",
+    "20:01:00 验证开始：检查画中画状态。",
+    "20:00:57 应用进入前台"
+  ],
+  "micPermission" : 1735552628,
+  "pip" : {
+    "active" : true,
+    "possible" : true,
+    "rendererError" : "",
+    "rendererStatus" : 1,
+    "supported" : true
+  },
+  "receivedBuffers" : 25,
+  "speechPermission" : 3,
+  "system" : "27.0",
+  "timestamp" : "2026-10-17T12:01:15Z",
+  "voice" : false
+}

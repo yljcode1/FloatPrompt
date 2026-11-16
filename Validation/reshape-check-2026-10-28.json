@@ -1,0 +1,24 @@
+{
+  "encodedBytes" : 33600,
+  "encodedVideo" : true,
+  "encoderError" : "",
+  "eyeEnlargeChangedChannels" : 4177,
+  "faceSlimChangedChannels" : 42723,
+  "gpuRender" : true,
+  "height" : 320,
+  "noFacePassthrough" : true,
+  "noseSlimChangedChannels" : 707,
+  "offPassthrough" : true,
+  "outputFirstPixel" : [
+    88,
+    117,
+    161
+  ],
+  "processedDiffers" : true,
+  "reshapeOffPassthrough" : true,
+  "smoothingOnlyChangedChannels" : 183510,
+  "smoothingOnlyMeanAbsoluteDifference" : 6.2370659722222221,
+  "smoothingWithoutBrightening" : true,
+  "trackingStateOnGeneratedFrame" : "未识别人脸 · 美型暂不应用",
+  "width" : 192
+}

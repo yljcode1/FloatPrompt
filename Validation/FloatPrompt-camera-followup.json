@@ -1,0 +1,26 @@
+{
+  "engineRunning" : true,
+  "events" : [
+    "20:03:38 应用进入后台",
+    "20:03:37 画中画请求暂停匀速滚动；语音开关保持原状态",
+    "20:03:37 画中画请求暂停匀速滚动；语音开关保持原状态",
+    "20:03:14 悬浮已开启；可切换到原生相机。窗口拖动与缩放由系统控制。",
+    "20:03:13 正在准备悬浮窗口…",
+    "20:03:13 使用设备端中文识别。",
+    "20:03:13 验证开始：检查画中画状态。",
+    "20:03:10 应用进入前台"
+  ],
+  "micPermission" : 1735552628,
+  "pip" : {
+    "active" : true,
+    "possible" : true,
+    "rendererError" : "",
+    "rendererStatus" : 1,
+    "supported" : true
+  },
+  "receivedBuffers" : 1178,
+  "speechPermission" : 3,
+  "system" : "27.0",
+  "timestamp" : "2026-10-17T12:05:11Z",
+  "voice" : true
+}

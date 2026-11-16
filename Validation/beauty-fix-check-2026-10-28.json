@@ -1,0 +1,18 @@
+{
+  "encodedBytes" : 33600,
+  "encodedVideo" : true,
+  "encoderError" : "",
+  "gpuRender" : true,
+  "height" : 320,
+  "offPassthrough" : true,
+  "outputFirstPixel" : [
+    88,
+    117,
+    161
+  ],
+  "processedDiffers" : true,
+  "smoothingOnlyChangedChannels" : 183510,
+  "smoothingOnlyMeanAbsoluteDifference" : 6.2370659722222221,
+  "smoothingWithoutBrightening" : true,
+  "width" : 192
+}

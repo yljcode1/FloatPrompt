@@ -1,0 +1,19 @@
+{
+  "events" : [
+    "19:59:46 画中画尚未就绪，请等待预览出现后再试。",
+    "19:59:46 验证开始：检查画中画状态。",
+    "19:59:43 应用进入前台"
+  ],
+  "micPermission" : 1735552628,
+  "pip" : {
+    "active" : false,
+    "possible" : true,
+    "rendererError" : "",
+    "rendererStatus" : 1,
+    "supported" : true
+  },
+  "speechPermission" : 3,
+  "system" : "27.0",
+  "timestamp" : "2026-10-17T11:59:49Z",
+  "voice" : false
+}

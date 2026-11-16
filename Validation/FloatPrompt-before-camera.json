@@ -1,0 +1,23 @@
+{
+  "engineRunning" : true,
+  "events" : [
+    "20:01:37 悬浮已开启；可切换到原生相机。窗口拖动与缩放由系统控制。",
+    "20:01:36 正在准备悬浮窗口…",
+    "20:01:36 使用设备端中文识别。",
+    "20:01:36 验证开始：检查画中画状态。",
+    "20:01:33 应用进入前台"
+  ],
+  "micPermission" : 1735552628,
+  "pip" : {
+    "active" : true,
+    "possible" : true,
+    "rendererError" : "",
+    "rendererStatus" : 1,
+    "supported" : true
+  },
+  "receivedBuffers" : 8,
+  "speechPermission" : 3,
+  "system" : "27.0",
+  "timestamp" : "2026-10-17T12:01:37Z",
+  "voice" : true
+}

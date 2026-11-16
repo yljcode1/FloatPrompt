@@ -1,0 +1,15 @@
+{
+  "encodedBytes" : 30205,
+  "encodedVideo" : true,
+  "encoderError" : "",
+  "gpuRender" : true,
+  "height" : 320,
+  "offPassthrough" : true,
+  "outputFirstPixel" : [
+    82,
+    109,
+    152
+  ],
+  "processedDiffers" : true,
+  "width" : 192
+}

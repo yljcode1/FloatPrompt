@@ -1,0 +1,87 @@
+import AVKit
+import UIKit
+
+final class PromptPiP: NSObject, AVPictureInPictureSampleBufferPlaybackDelegate, AVPictureInPictureControllerDelegate {
+    let layer = AVSampleBufferDisplayLayer()
+    private var controller: AVPictureInPictureController?
+    private var offset: CGFloat = 0
+    private var startRequest = UUID()
+    private var lastIndex = -1
+    private var lastLines: [String] = []
+    var onPlayback: ((Bool) -> Void)?
+    var onSkip: ((Bool) -> Void)?
+    var onStatus: ((String) -> Void)?
+    var diagnosticState: [String: Any] { ["supported": supported, "possible": controller?.isPictureInPicturePossible ?? false, "active": controller?.isPictureInPictureActive ?? false, "rendererStatus": layer.sampleBufferRenderer.status.rawValue, "rendererError": layer.sampleBufferRenderer.error?.localizedDescription ?? ""] }
+    var supported: Bool { AVPictureInPictureController.isPictureInPictureSupported() }
+    override init() {
+        super.init()
+        layer.videoGravity = .resizeAspect
+        layer.backgroundColor = UIColor.black.cgColor
+    }
+    func prepare() {
+        guard controller == nil else { return }
+        let source = AVPictureInPictureController.ContentSource(sampleBufferDisplayLayer: layer, playbackDelegate: self)
+        controller = AVPictureInPictureController(contentSource: source)
+        controller?.delegate = self
+        controller?.canStartPictureInPictureAutomaticallyFromInline = false
+    }
+    func start() {
+        prepare()
+        guard supported else { onStatus?("此设备不支持画中画。"); return }
+        let token = UUID(); startRequest = token
+        startWhenReady(token: token, retries: 30)
+    }
+    private func startWhenReady(token: UUID, retries: Int) {
+        guard token == startRequest else { return }
+        if controller?.isPictureInPicturePossible == true { controller?.startPictureInPicture(); return }
+        guard retries > 0 else { onStatus?("画中画准备超时，请保持应用在前台后重试。"); return }
+        if retries == 30 { onStatus?("正在准备悬浮窗口…") }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in self?.startWhenReady(token: token, retries: retries - 1) }
+    }
+    func stop() { startRequest = UUID(); controller?.stopPictureInPicture() }
+    func resetOffset() { offset = 0 }
+    func advance(points: Double) { offset += CGFloat(points) }
+    func update(lines: [String], index: Int, fontSize: Double) {
+        if index != lastIndex || lines != lastLines { offset = 0; lastIndex = index; lastLines = lines }
+        let width = 720, height = 480
+        var pixel: CVPixelBuffer?
+        guard CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB,
+            [kCVPixelBufferCGImageCompatibilityKey: true, kCVPixelBufferCGBitmapContextCompatibilityKey: true] as CFDictionary, &pixel) == kCVReturnSuccess, let pixel else { return }
+        CVPixelBufferLockBaseAddress(pixel, [])
+        defer { CVPixelBufferUnlockBaseAddress(pixel, []) }
+        guard let context = CGContext(data: CVPixelBufferGetBaseAddress(pixel), width: width, height: height, bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixel), space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue) else { return }
+        context.setFillColor(UIColor(red: 0.06, green: 0.07, blue: 0.10, alpha: 1).cgColor)
+        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        context.translateBy(x: 0, y: CGFloat(height)); context.scaleBy(x: 1, y: -1)
+        UIGraphicsPushContext(context)
+        let font = UIFont.systemFont(ofSize: CGFloat(fontSize) * 1.55, weight: .semibold)
+        var y: CGFloat = 30 - offset
+        for i in max(0, index)..<lines.count {
+            let paragraph = NSMutableParagraphStyle(); paragraph.lineSpacing = 12
+            let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: i == index ? UIColor(red: 0.78, green: 1, blue: 0.50, alpha: 1) : UIColor.white, .paragraphStyle: paragraph]
+            let text = lines[i] as NSString
+            let rect = text.boundingRect(with: CGSize(width: 656, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
+            text.draw(with: CGRect(x: 32, y: y, width: 656, height: rect.height), options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
+            y += rect.height + 30
+            if y > CGFloat(height) + 100 { break }
+        }
+        if y < 30 { offset = 0 } // Loop at the end instead of scrolling into an empty window.
+        UIGraphicsPopContext()
+        var description: CMVideoFormatDescription?
+        guard CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixel, formatDescriptionOut: &description) == noErr, let description else { return }
+        var timing = CMSampleTimingInfo(duration: CMTime(value: 1, timescale: 5), presentationTimeStamp: CMTime(seconds: CACurrentMediaTime(), preferredTimescale: 600), decodeTimeStamp: .invalid)
+        var sample: CMSampleBuffer?
+        guard CMSampleBufferCreateReadyWithImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixel, formatDescription: description, sampleTiming: &timing, sampleBufferOut: &sample) == noErr, let sample else { return }
+        CMSetAttachment(sample, key: kCMSampleAttachmentKey_DisplayImmediately, value: kCFBooleanTrue, attachmentMode: kCMAttachmentMode_ShouldNotPropagate)
+        if layer.sampleBufferRenderer.status == .failed { layer.sampleBufferRenderer.flush() }
+        if layer.sampleBufferRenderer.isReadyForMoreMediaData { layer.sampleBufferRenderer.enqueue(sample) }
+    }
+    func pictureInPictureController(_ controller: AVPictureInPictureController, setPlaying playing: Bool) { onPlayback?(playing) }
+    func pictureInPictureControllerTimeRangeForPlayback(_ controller: AVPictureInPictureController) -> CMTimeRange { CMTimeRange(start: .negativeInfinity, duration: .positiveInfinity) }
+    func pictureInPictureControllerIsPlaybackPaused(_ controller: AVPictureInPictureController) -> Bool { false }
+    func pictureInPictureController(_ controller: AVPictureInPictureController, didTransitionToRenderSize newRenderSize: CMVideoDimensions) {}
+    func pictureInPictureController(_ controller: AVPictureInPictureController, skipByInterval skipInterval: CMTime, completion: @escaping () -> Void) { onSkip?(skipInterval.seconds > 0); completion() }
+    func pictureInPictureControllerDidStartPictureInPicture(_ controller: AVPictureInPictureController) { onStatus?("悬浮已开启；可切换到原生相机。窗口拖动与缩放由系统控制。") }
+    func pictureInPictureController(_ controller: AVPictureInPictureController, failedToStartPictureInPictureWithError error: Error) { onStatus?("悬浮失败：\(error.localizedDescription)") }
+    func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) { onStatus?("悬浮已关闭。") }
+}
